@@ -14,9 +14,10 @@ class VocabParallelEmbedding(nn.Module):
         embedding_dim: int,
     ):
         super().__init__()
-        self.tp_rank = dist.get_rank()
-        self.tp_size = dist.get_world_size()
-        assert num_embeddings % self.tp_size == 0
+        self.tp_rank = dist.get_rank() if dist.is_initialized() else 0
+        self.tp_size = dist.get_world_size() if dist.is_initialized() else 1
+        if self.tp_size > 1:
+            assert num_embeddings % self.tp_size == 0
         self.num_embeddings = num_embeddings
         self.num_embeddings_per_partition = self.num_embeddings // self.tp_size
         self.vocab_start_idx = self.num_embeddings_per_partition * self.tp_rank
@@ -38,7 +39,8 @@ class VocabParallelEmbedding(nn.Module):
         y = F.embedding(x, self.weight)
         if self.tp_size > 1:
             y = mask.unsqueeze(1) * y
-            dist.all_reduce(y)
+            if dist.is_initialized():
+                dist.all_reduce(y)
         return y
 
 
@@ -60,7 +62,11 @@ class ParallelLMHead(VocabParallelEmbedding):
             x = x[last_indices].contiguous()
         logits = F.linear(x, self.weight)
         if self.tp_size > 1:
-            all_logits = [torch.empty_like(logits) for _ in range(self.tp_size)] if self.tp_rank == 0 else None
-            dist.gather(logits, all_logits, 0)
-            logits = torch.cat(all_logits, -1) if self.tp_rank == 0 else None
+            if self.tp_rank == 0:
+                all_logits = [torch.empty_like(logits) for _ in range(self.tp_size)]
+            else:
+                all_logits = None
+            if dist.is_initialized():
+                dist.gather(logits, all_logits, 0)
+            logits = torch.cat(all_logits, -1) if (self.tp_rank == 0 and all_logits is not None) else None
         return logits

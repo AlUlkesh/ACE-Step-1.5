@@ -1,3 +1,74 @@
+<h1 align="center">ACE-Step 1.5 - Windows single GPU fork</h1>
+This fork aims to simplify running the code on Windows with a single GPU.
+
+## 📦 Installation
+
+> **Requirements:** Python, CUDA GPU
+
+### 1. Install miniconda (Package Manager)
+
+https://www.anaconda.com/docs/getting-started/miniconda/main
+
+### 2. Create and activate miniconda environment
+
+For the remaining steps open "Anaconda Prompt (miniconda3)"
+
+```cmd
+conda create -n acestep python=3.11
+conda activate acestep
+```
+
+### 2. Clone
+
+```cmd
+git clone https://github.com/AlUlkesh/ACE-Step-1.5
+cd ACE-Step-1.5
+```
+
+### 2. Install torch
+
+```cmd
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
+```
+
+This will currently install PyTorch 2.10.0 Stable, CUDA 13.0
+
+### 3. Install flash attention 2
+
+Find a wheel compatible with your python, PyTorch and CUDA version and save it locally. This is a helpful site for that:
+
+https://flashattn.dev/
+
+```cmd
+pip install <local-wheel>
+```
+
+### 4. Install requirements
+
+```cmd
+pip install -r requirements_win.txt
+```
+
+### 5. Install nano-vllm
+
+This is the step that will drastically increase generation speed.
+
+```cmd
+pip install -e acestep\third_parts\nano-vllm
+```
+
+### 6. Launch
+
+#### 🖥️ Gradio Web UI
+
+```cmd
+ui.bat
+```
+
+Open http://localhost:7860 in your browser. Models will be downloaded automatically on first run or store them in a checkpoints folder.
+<br><br><br>
+Original readme follows...
+<br><br><br>
 <h1 align="center">ACE-Step 1.5</h1>
 <h1 align="center">Pushing the Boundaries of Open-Source Music Generation</h1>
 <p align="center">
