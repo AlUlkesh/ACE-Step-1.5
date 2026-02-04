@@ -18,14 +18,14 @@ conda create -n acestep python=3.11
 conda activate acestep
 ```
 
-### 2. Clone
+### 3. Clone
 
 ```cmd
 git clone https://github.com/AlUlkesh/ACE-Step-1.5
 cd ACE-Step-1.5
 ```
 
-### 2. Install torch
+### 4. Install torch
 
 ```cmd
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
@@ -33,7 +33,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 This will currently install PyTorch 2.10.0 Stable, CUDA 13.0
 
-### 3. Install flash attention 2
+### 5. Install flash attention 2
 
 Find a wheel compatible with your python, PyTorch and CUDA version and save it locally. This is a helpful site for that:
 
@@ -43,13 +43,13 @@ https://flashattn.dev/
 pip install <local-wheel>
 ```
 
-### 4. Install requirements
+### 6. Install requirements
 
 ```cmd
 pip install -r requirements_win.txt
 ```
 
-### 5. Install nano-vllm
+### 7. Install nano-vllm
 
 This is the step that will drastically increase generation speed.
 
@@ -57,7 +57,7 @@ This is the step that will drastically increase generation speed.
 pip install -e acestep\third_parts\nano-vllm
 ```
 
-### 6. Launch
+### 8. Launch
 
 #### 🖥️ Gradio Web UI
 
